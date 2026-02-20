@@ -1,0 +1,42 @@
+
+clc; 
+clear all;
+clear figure;
+
+
+C = [6 5 0 0];
+A = [1 1 1 0;
+    3 2 0 1]; 
+b = [5; 12]; 
+
+z = @(X) C*X;
+
+m = size(A, 1); % Number of contraints
+n = size(A, 2); % Number of variables 
+
+basicsol = [];
+bfsol = [];
+ncm = nchoosek(n, m); 
+pair = nchoosek(1:n, m); 
+
+for i = 1:ncm
+    basicvar_index = pair(i, :);
+    y = zeros(n, 1);
+    % Solve for the basic feasible solution
+    X = A(:, basicvar_index) \ b; 
+    y(basicvar_index) = X;
+    basicsol = [basicsol y];
+    if(X >= 0)
+        bfsol = [bfsol y];
+    end
+end
+
+disp(basicsol)
+disp(bfsol)
+
+cost = z(bfsol);
+[opt_val index] = max(cost);
+optsol = bfsol(: , index);
+disp('Optimal Solution:');
+
+disp(optsol);
